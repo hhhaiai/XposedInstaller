@@ -56,8 +56,6 @@ public class IntegerListPreference extends ListPreference {
 		if (value == null)
 			return 0;
 
-		return (int)((value.startsWith("0x"))
-				? Long.parseLong(value.substring(2), 16)
-				: Long.parseLong(value));
+		return (int) ((value.startsWith("0x")) ? Long.parseLong(value.substring(2), 16) : Long.parseLong(value));
 	}
 }

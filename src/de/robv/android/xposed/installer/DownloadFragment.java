@@ -3,6 +3,8 @@ package de.robv.android.xposed.installer;
 import java.text.DateFormat;
 import java.util.Date;
 
+import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -29,9 +31,6 @@ import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-
-import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
-
 import de.robv.android.xposed.installer.repo.RepoDb;
 import de.robv.android.xposed.installer.repo.RepoDbDefinitions.OverviewColumnsIndexes;
 import de.robv.android.xposed.installer.util.ModuleUtil;
@@ -61,7 +60,8 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 		mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
 			@Override
 			public Cursor runQuery(CharSequence constraint) {
-				// TODO Instead of this workaround, show a "downloads disabled" message
+				// TODO Instead of this workaround, show a "downloads disabled"
+		        // message
 				if (XposedApp.getInstance().areDownloadsEnabled())
 					return RepoDb.queryModuleOverview(mSortingOrder, constraint);
 				else
@@ -106,8 +106,7 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				// Expand the search view when the SEARCH key is triggered
-				if (keyCode == KeyEvent.KEYCODE_SEARCH && event.getAction() == KeyEvent.ACTION_UP
-						&& (event.getFlags() & KeyEvent.FLAG_CANCELED) == 0) {
+				if (keyCode == KeyEvent.KEYCODE_SEARCH && event.getAction() == KeyEvent.ACTION_UP && (event.getFlags() & KeyEvent.FLAG_CANCELED) == 0) {
 					if (mSearchView != null)
 						mSearchView.setIconified(false);
 					return true;
@@ -174,23 +173,23 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_refresh:
-				mRepoLoader.triggerReload(true);
-				return true;
-			case R.id.menu_sort:
-				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				builder.setTitle(R.string.download_sorting_title);
-				builder.setSingleChoiceItems(R.array.download_sort_order, mSortingOrder, new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						mSortingOrder = which;
-						mPref.edit().putInt("download_sorting_order", mSortingOrder).commit();
-						reloadItems();
-						dialog.dismiss();
-					}
-				});
-				builder.show();
-				return true;
+		case R.id.menu_refresh:
+			mRepoLoader.triggerReload(true);
+			return true;
+		case R.id.menu_sort:
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setTitle(R.string.download_sorting_title);
+			builder.setSingleChoiceItems(R.array.download_sort_order, mSortingOrder, new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					mSortingOrder = which;
+					mPref.edit().putInt("download_sorting_order", mSortingOrder).commit();
+					reloadItems();
+					dialog.dismiss();
+				}
+			});
+			builder.show();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -210,7 +209,6 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 		reloadItems();
 	}
 
-
 	private class DownloadsAdapter extends CursorAdapter implements StickyListHeadersAdapter {
 		private final Context mContext;
 		private final DateFormat mDateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -224,18 +222,8 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 			mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 			Resources res = context.getResources();
-			sectionHeadersStatus = new String[] {
-				res.getString(R.string.download_section_framework),
-				res.getString(R.string.download_section_update_available),
-				res.getString(R.string.download_section_installed),
-				res.getString(R.string.download_section_not_installed),
-			};
-			sectionHeadersDate = new String[] {
-				res.getString(R.string.download_section_24h),
-				res.getString(R.string.download_section_7d),
-				res.getString(R.string.download_section_30d),
-				res.getString(R.string.download_section_older)
-			};
+			sectionHeadersStatus = new String[] { res.getString(R.string.download_section_framework), res.getString(R.string.download_section_update_available), res.getString(R.string.download_section_installed), res.getString(R.string.download_section_not_installed), };
+			sectionHeadersDate = new String[] { res.getString(R.string.download_section_24h), res.getString(R.string.download_section_7d), res.getString(R.string.download_section_30d), res.getString(R.string.download_section_older) };
 		}
 
 		@Override
@@ -247,7 +235,7 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 			long section = getHeaderId(position);
 
 			TextView tv = (TextView) convertView.findViewById(android.R.id.title);
-			tv.setText(mSortingOrder == RepoDb.SORT_STATUS ? sectionHeadersStatus[(int)section] : sectionHeadersDate[(int) section]);
+			tv.setText(mSortingOrder == RepoDb.SORT_STATUS ? sectionHeadersStatus[(int) section] : sectionHeadersDate[(int) section]);
 			return convertView;
 		}
 
@@ -261,7 +249,7 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 			boolean hasUpdate = cursor.getInt(OverviewColumnsIndexes.HAS_UPDATE) > 0;
 
 			if (mSortingOrder != RepoDb.SORT_STATUS) {
-				long timestamp = (mSortingOrder ==  RepoDb.SORT_UPDATED) ? updated : created;
+				long timestamp = (mSortingOrder == RepoDb.SORT_UPDATED) ? updated : created;
 				long age = System.currentTimeMillis() - timestamp;
 				final long mSecsPerDay = 24 * 60 * 60 * 1000L;
 				if (age < mSecsPerDay)
@@ -321,8 +309,7 @@ public class DownloadFragment extends Fragment implements RepoListener, ModuleLi
 
 			String creationDate = mDateFormatter.format(new Date(created));
 			String updateDate = mDateFormatter.format(new Date(updated));
-			((TextView) view.findViewById(R.id.timestamps)).setText(
-				getString(R.string.download_timestamps, creationDate, updateDate));
+			((TextView) view.findViewById(R.id.timestamps)).setText(getString(R.string.download_timestamps, creationDate, updateDate));
 		}
 	}
 }

@@ -68,17 +68,7 @@ public class DownloadsUtil {
 			return null;
 		}
 
-		return new DownloadInfo(
-				c.getLong(columnId),
-				c.getString(columnUri),
-				c.getString(columnTitle),
-				c.getLong(columnLastMod),
-				localFilename,
-				c.getInt(columnStatus),
-				c.getInt(columnTotalSize),
-				c.getInt(columnBytesDownloaded),
-				c.getInt(columnReason)
-				);
+		return new DownloadInfo(c.getLong(columnId), c.getString(columnUri), c.getString(columnTitle), c.getLong(columnLastMod), localFilename, c.getInt(columnStatus), c.getInt(columnTotalSize), c.getInt(columnBytesDownloaded), c.getInt(columnReason));
 	}
 
 	public static DownloadInfo getLatestForUrl(Context context, String url) {
@@ -110,17 +100,7 @@ public class DownloadsUtil {
 				continue;
 			}
 
-			downloads.add(new DownloadInfo(
-					c.getLong(columnId),
-					c.getString(columnUri),
-					c.getString(columnTitle),
-					c.getLong(columnLastMod),
-					localFilename,
-					c.getInt(columnStatus),
-					c.getInt(columnTotalSize),
-					c.getInt(columnBytesDownloaded),
-					c.getInt(columnReason)
-					));
+			downloads.add(new DownloadInfo(c.getLong(columnId), c.getString(columnUri), c.getString(columnTitle), c.getLong(columnLastMod), localFilename, c.getInt(columnStatus), c.getInt(columnTotalSize), c.getInt(columnBytesDownloaded), c.getInt(columnReason)));
 		}
 
 		Collections.sort(downloads);
@@ -154,7 +134,6 @@ public class DownloadsUtil {
 		dm.remove(ids);
 	}
 
-
 	public static void removeOutdated(Context context, long cutoff) {
 		DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 		Cursor c = dm.query(new Query());
@@ -177,7 +156,6 @@ public class DownloadsUtil {
 		dm.remove(ids);
 	}
 
-
 	public static void triggerDownloadFinishedCallback(Context context, long id) {
 		DownloadInfo info = getById(context, id);
 		if (info == null || info.status != DownloadManager.STATUS_SUCCESSFUL)
@@ -194,7 +172,6 @@ public class DownloadsUtil {
 		callback.onDownloadFinished(context, info);
 	}
 
-
 	public static class DownloadInfo implements Comparable<DownloadInfo> {
 		public final long id;
 		public final String url;
@@ -206,8 +183,7 @@ public class DownloadsUtil {
 		public final int bytesDownloaded;
 		public final int reason;
 
-		private DownloadInfo(long id, String url, String title, long lastModification, String localFilename,
-				int status, int totalSize, int bytesDownloaded, int reason) {
+		private DownloadInfo(long id, String url, String title, long lastModification, String localFilename, int status, int totalSize, int bytesDownloaded, int reason) {
 			this.id = id;
 			this.url = url;
 			this.title = title;
@@ -221,7 +197,7 @@ public class DownloadsUtil {
 
 		@Override
 		public int compareTo(DownloadInfo another) {
-			int compare = (int)(another.lastModification - this.lastModification);
+			int compare = (int) (another.lastModification - this.lastModification);
 			if (compare != 0)
 				return compare;
 			return this.url.compareTo(another.url);
@@ -231,7 +207,6 @@ public class DownloadsUtil {
 	public static interface DownloadFinishedCallback {
 		public void onDownloadFinished(Context context, DownloadInfo info);
 	}
-
 
 	public static SyncDownloadInfo downloadSynchronously(String url, File target) {
 		// TODO Potential parameter?
@@ -270,9 +245,7 @@ public class DownloadsUtil {
 				if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
 					return new SyncDownloadInfo(SyncDownloadInfo.STATUS_NOT_MODIFIED, null);
 				} else if (responseCode < 200 || responseCode >= 300) {
-					return new SyncDownloadInfo(SyncDownloadInfo.STATUS_FAILED,
-						mApp.getString(R.string.repo_download_failed_http, url, responseCode,
-								httpConnection.getResponseMessage()));
+					return new SyncDownloadInfo(SyncDownloadInfo.STATUS_FAILED, mApp.getString(R.string.repo_download_failed_http, url, responseCode, httpConnection.getResponseMessage()));
 				}
 			}
 
@@ -289,39 +262,37 @@ public class DownloadsUtil {
 				String modified = httpConnection.getHeaderField("Last-Modified");
 				String etag = httpConnection.getHeaderField("ETag");
 
-				mPref.edit()
-					.putString("download_" + url + "_modified", modified)
-					.putString("download_" + url + "_etag", etag)
-					.commit();
+				mPref.edit().putString("download_" + url + "_modified", modified).putString("download_" + url + "_etag", etag).commit();
 			}
 
 			return new SyncDownloadInfo(SyncDownloadInfo.STATUS_SUCCESS, null);
 
 		} catch (Throwable t) {
-			return new SyncDownloadInfo(SyncDownloadInfo.STATUS_FAILED,
-				mApp.getString(R.string.repo_download_failed, url, t.getMessage()));
+			return new SyncDownloadInfo(SyncDownloadInfo.STATUS_FAILED, mApp.getString(R.string.repo_download_failed, url, t.getMessage()));
 
 		} finally {
 			if (connection != null && connection instanceof HttpURLConnection)
 				((HttpURLConnection) connection).disconnect();
 			if (in != null)
-				try { in.close(); } catch (IOException ignored) {}
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
 			if (out != null)
-				try { out.close(); } catch (IOException ignored) {}
+				try {
+					out.close();
+				} catch (IOException ignored) {
+				}
 		}
 	}
 
 	public static void clearCache(String url) {
 		if (url != null) {
-			mPref.edit()
-				.remove("download_" + url + "_modified")
-				.remove("download_" + url + "_etag")
-				.apply();
+			mPref.edit().remove("download_" + url + "_modified").remove("download_" + url + "_etag").apply();
 		} else {
 			mPref.edit().clear().apply();
 		}
 	}
-
 
 	public static class SyncDownloadInfo {
 		public static final int STATUS_SUCCESS = 0;
@@ -337,4 +308,3 @@ public class DownloadsUtil {
 		}
 	}
 }
-

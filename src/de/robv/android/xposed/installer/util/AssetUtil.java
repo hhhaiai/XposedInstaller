@@ -60,7 +60,7 @@ public class AssetUtil {
 
 			byte[] buffer = new byte[1024];
 			int len;
-			while ((len = in.read(buffer)) > 0){
+			while ((len = in.read(buffer)) > 0) {
 				out.write(buffer, 0, len);
 			}
 			in.close();
@@ -117,8 +117,7 @@ public class AssetUtil {
 		}
 
 		if (mStaticBusyboxInfo.versionCode != STATIC_BUSYBOX_REQUIRED_VERSION) {
-			Log.e(XposedApp.TAG, String.format("Ignoring static BusyBox package with version %d, we need version %d",
-					mStaticBusyboxInfo.versionCode, STATIC_BUSYBOX_REQUIRED_VERSION));
+			Log.e(XposedApp.TAG, String.format("Ignoring static BusyBox package with version %d, we need version %d", mStaticBusyboxInfo.versionCode, STATIC_BUSYBOX_REQUIRED_VERSION));
 			mStaticBusyboxInfo = null;
 			return;
 		} else if (!wasAvailable) {

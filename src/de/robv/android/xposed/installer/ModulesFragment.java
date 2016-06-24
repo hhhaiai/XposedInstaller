@@ -61,7 +61,8 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 			try {
 				ApplicationInfo ai = mPm.getApplicationInfo(PLAY_STORE_PACKAGE, 0);
 				PLAY_STORE_LABEL = mPm.getApplicationLabel(ai).toString();
-			} catch (NameNotFoundException ignored) {}
+			} catch (NameNotFoundException ignored) {
+			}
 		}
 	}
 
@@ -75,8 +76,7 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 
 		installedXposedVersion = XposedApp.getActiveXposedVersion();
 		if (installedXposedVersion <= 0) {
-			View notActiveNote = getActivity().getLayoutInflater().inflate(
-					R.layout.xposed_not_active_note, getListView(), false);
+			View notActiveNote = getActivity().getLayoutInflater().inflate(R.layout.xposed_not_active_note, getListView(), false);
 			notActiveNote.setTag(NOT_ACTIVE_NOTE_TAG);
 			getListView().addHeaderView(notActiveNote);
 		}
@@ -118,11 +118,11 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 			mAdapter.addAll(mModuleUtil.getModules().values());
 			final Collator col = Collator.getInstance(Locale.getDefault());
 			mAdapter.sort(new Comparator<InstalledModule>() {
-				@Override
-				public int compare(InstalledModule lhs, InstalledModule rhs) {
-					return col.compare(lhs.getAppName(), rhs.getAppName());
-				}
-			});
+		        @Override
+		        public int compare(InstalledModule lhs, InstalledModule rhs) {
+			        return col.compare(lhs.getAppName(), rhs.getAppName());
+		        }
+	        });
 			mAdapter.notifyDataSetChanged();
 		}
 	};
@@ -192,41 +192,39 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 			return false;
 
 		switch (item.getItemId()) {
-			case R.id.menu_launch:
-				startActivity(getSettingsIntent(module.packageName));
-				return true;
+		case R.id.menu_launch:
+			startActivity(getSettingsIntent(module.packageName));
+			return true;
 
-			case R.id.menu_download_updates:
-				Intent detailsIntent = new Intent(getActivity(), DownloadDetailsActivity.class);
-				detailsIntent.setData(Uri.fromParts("package", module.packageName, null));
-				startActivity(detailsIntent);
-				return true;
+		case R.id.menu_download_updates:
+			Intent detailsIntent = new Intent(getActivity(), DownloadDetailsActivity.class);
+			detailsIntent.setData(Uri.fromParts("package", module.packageName, null));
+			startActivity(detailsIntent);
+			return true;
 
-			case R.id.menu_support:
-				NavUtil.startURL(getActivity(), RepoDb.getModuleSupport(module.packageName));
-				return true;
+		case R.id.menu_support:
+			NavUtil.startURL(getActivity(), RepoDb.getModuleSupport(module.packageName));
+			return true;
 
-			case R.id.menu_play_store:
-				Intent i = new Intent(android.content.Intent.ACTION_VIEW);
-				i.setData(Uri.parse(String.format(PLAY_STORE_LINK, module.packageName)));
-				i.setPackage(PLAY_STORE_PACKAGE);
-				try {
-					startActivity(i);
-				} catch (ActivityNotFoundException e) {
-					i.setPackage(null);
-					startActivity(i);
-				}
-				return true;
+		case R.id.menu_play_store:
+			Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+			i.setData(Uri.parse(String.format(PLAY_STORE_LINK, module.packageName)));
+			i.setPackage(PLAY_STORE_PACKAGE);
+			try {
+				startActivity(i);
+			} catch (ActivityNotFoundException e) {
+				i.setPackage(null);
+				startActivity(i);
+			}
+			return true;
 
-			case R.id.menu_app_info:
-				startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-					Uri.fromParts("package", module.packageName, null)));
-				return true;
+		case R.id.menu_app_info:
+			startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", module.packageName, null)));
+			return true;
 
-			case R.id.menu_uninstall:
-				startActivity(new Intent(Intent.ACTION_UNINSTALL_PACKAGE,
-					Uri.fromParts("package", module.packageName, null)));
-				return true;
+		case R.id.menu_uninstall:
+			startActivity(new Intent(Intent.ACTION_UNINSTALL_PACKAGE, Uri.fromParts("package", module.packageName, null)));
+			return true;
 		}
 
 		return false;
@@ -239,8 +237,10 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 	}
 
 	private Intent getSettingsIntent(String packageName) {
-		// taken from ApplicationPackageManager.getLaunchIntentForPackage(String)
-		// first looks for an Xposed-specific category, falls back to getLaunchIntentForPackage
+		// taken from
+		// ApplicationPackageManager.getLaunchIntentForPackage(String)
+		// first looks for an Xposed-specific category, falls back to
+		// getLaunchIntentForPackage
 		PackageManager pm = getActivity().getPackageManager();
 
 		Intent intentToResolve = new Intent(Intent.ACTION_MAIN);
@@ -268,7 +268,8 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 			View view = super.getView(position, convertView, parent);
 
 			if (convertView == null) {
-				// The reusable view was created for the first time, set up the listener on the checkbox
+				// The reusable view was created for the first time, set up the
+				// listener on the checkbox
 				((CheckBox) view.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -312,13 +313,11 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 				warningText.setVisibility(View.VISIBLE);
 			} else if (installedXposedVersion != 0 && item.minVersion > installedXposedVersion) {
 				checkbox.setEnabled(false);
-				warningText.setText(String.format(getString(R.string.warning_xposed_min_version),
-						item.minVersion));
+				warningText.setText(String.format(getString(R.string.warning_xposed_min_version), item.minVersion));
 				warningText.setVisibility(View.VISIBLE);
 			} else if (item.minVersion < ModuleUtil.MIN_MODULE_VERSION) {
 				checkbox.setEnabled(false);
-				warningText.setText(String.format(getString(R.string.warning_min_version_too_low),
-						item.minVersion, ModuleUtil.MIN_MODULE_VERSION));
+				warningText.setText(String.format(getString(R.string.warning_min_version_too_low), item.minVersion, ModuleUtil.MIN_MODULE_VERSION));
 				warningText.setVisibility(View.VISIBLE);
 			} else {
 				checkbox.setEnabled(true);

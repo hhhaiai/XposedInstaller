@@ -14,17 +14,17 @@ public class PackageChangeReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)
-				&& intent.getBooleanExtra(Intent.EXTRA_REPLACING, false))
-			// Ignore existing packages being removed in order to be updated
-			return;
+		if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED) && intent.getBooleanExtra(Intent.EXTRA_REPLACING, false))
+		    // Ignore existing packages being removed in order to be updated
+		    return;
 
 		String packageName = getPackageName(intent);
 		if (packageName == null)
 			return;
 
 		if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
-			// make sure that the change is for the complete package, not only a component
+			// make sure that the change is for the complete package, not only a
+			// component
 			String[] components = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_COMPONENT_NAME_LIST);
 			if (components != null) {
 				boolean isForPackage = false;
@@ -47,7 +47,8 @@ public class PackageChangeReceiver extends BroadcastReceiver {
 
 		InstalledModule module = ModuleUtil.getInstance().reloadSingleModule(packageName);
 		if (module == null || intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
-			// Package being removed, disable it if it was a previously active Xposed mod
+			// Package being removed, disable it if it was a previously active
+			// Xposed mod
 			if (mModuleUtil.isModuleEnabled(packageName)) {
 				mModuleUtil.setModuleEnabled(packageName, false);
 				mModuleUtil.updateModulesList(false);

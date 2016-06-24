@@ -22,7 +22,6 @@ import de.robv.android.xposed.installer.util.ModuleUtil.ModuleListener;
 import de.robv.android.xposed.installer.util.RepoLoader;
 import de.robv.android.xposed.installer.util.RepoLoader.RepoListener;
 
-
 public class DownloadDetailsActivity extends XposedDropdownNavActivity implements RepoListener, ModuleListener {
 
 	private ViewPager mPager;
@@ -54,11 +53,7 @@ public class DownloadDetailsActivity extends XposedDropdownNavActivity implement
 
 			((TextView) findViewById(android.R.id.title)).setText(mModule.name);
 
-			mPageTitles = new String[] {
-				getString(R.string.download_details_page_description),
-				getString(R.string.download_details_page_versions),
-				getString(R.string.download_details_page_settings),
-			};
+			mPageTitles = new String[] { getString(R.string.download_details_page_description), getString(R.string.download_details_page_versions), getString(R.string.download_details_page_settings), };
 			mPager = (ViewPager) findViewById(R.id.download_pager);
 			mPager.setAdapter(new ScreenSlidePagerAdapter(getFragmentManager()));
 
@@ -153,9 +148,9 @@ public class DownloadDetailsActivity extends XposedDropdownNavActivity implement
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_refresh:
-				RepoLoader.getInstance().triggerReload(true);
-				return true;
+		case R.id.menu_refresh:
+			RepoLoader.getInstance().triggerReload(true);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -180,14 +175,14 @@ public class DownloadDetailsActivity extends XposedDropdownNavActivity implement
 		@Override
 		public Fragment getItem(int position) {
 			switch (position) {
-				case DOWNLOAD_DESCRIPTION:
-					return new DownloadDetailsFragment();
-				case DOWNLOAD_VERSIONS:
-					return new DownloadDetailsVersionsFragment();
-				case DOWNLOAD_SETTINGS:
-					return new DownloadDetailsSettingsFragment();
-				default:
-					return null;
+			case DOWNLOAD_DESCRIPTION:
+				return new DownloadDetailsFragment();
+			case DOWNLOAD_VERSIONS:
+				return new DownloadDetailsVersionsFragment();
+			case DOWNLOAD_SETTINGS:
+				return new DownloadDetailsSettingsFragment();
+			default:
+				return null;
 			}
 		}
 

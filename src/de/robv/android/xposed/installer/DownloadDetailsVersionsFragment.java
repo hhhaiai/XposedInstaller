@@ -207,14 +207,12 @@ public class DownloadDetailsVersionsFragment extends ListFragment {
 				try {
 					String actualMd5Sum = HashUtil.md5(localFile);
 					if (!moduleVersion.md5sum.equals(actualMd5Sum)) {
-						Toast.makeText(context, context.getString(R.string.download_md5sum_incorrect,
-								actualMd5Sum, moduleVersion.md5sum), Toast.LENGTH_LONG).show();
+						Toast.makeText(context, context.getString(R.string.download_md5sum_incorrect, actualMd5Sum, moduleVersion.md5sum), Toast.LENGTH_LONG).show();
 						DownloadsUtil.removeById(context, info.id);
 						return;
 					}
 				} catch (Exception e) {
-					Toast.makeText(context, context.getString(R.string.download_could_not_read_file,
-							e.getMessage()), Toast.LENGTH_LONG).show();
+					Toast.makeText(context, context.getString(R.string.download_could_not_read_file, e.getMessage()), Toast.LENGTH_LONG).show();
 					DownloadsUtil.removeById(context, info.id);
 					return;
 				}
@@ -230,10 +228,7 @@ public class DownloadDetailsVersionsFragment extends ListFragment {
 			}
 
 			if (!packageInfo.packageName.equals(moduleVersion.module.packageName)) {
-				Toast.makeText(context,
-						context.getString(R.string.download_incorrect_package_name,
-								packageInfo.packageName, moduleVersion.module.packageName),
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, context.getString(R.string.download_incorrect_package_name, packageInfo.packageName, moduleVersion.module.packageName), Toast.LENGTH_LONG).show();
 				DownloadsUtil.removeById(context, info.id);
 				return;
 			}
@@ -241,8 +236,8 @@ public class DownloadDetailsVersionsFragment extends ListFragment {
 			Intent installIntent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
 			installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			installIntent.setDataAndType(Uri.fromFile(localFile), DownloadsUtil.MIME_TYPE_APK);
-			//installIntent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-			//installIntent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
+			// installIntent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+			// installIntent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
 			installIntent.putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME, context.getApplicationInfo().packageName);
 			context.startActivity(installIntent);
 		}
