@@ -48,7 +48,7 @@ public class XposedInstallerActivity extends XposedDropdownNavActivity {
 			}
 		}
 
-		if (selectTabIndex == -1  && savedInstanceState != null)
+		if (selectTabIndex == -1 && savedInstanceState != null)
 			selectTabIndex = savedInstanceState.getInt("section", -1);
 
 		if (selectTabIndex >= 0 && selectTabIndex < TAB_COUNT)

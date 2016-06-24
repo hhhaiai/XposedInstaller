@@ -53,7 +53,7 @@ public class DownloadDetailsFragment extends Fragment {
 		}
 
 		ViewGroup moreInfoContainer = (ViewGroup) view.findViewById(R.id.download_moreinfo_container);
-		for (Pair<String,String> moreInfoEntry : module.moreInfo) {
+		for (Pair<String, String> moreInfoEntry : module.moreInfo) {
 			View moreInfoView = inflater.inflate(R.layout.download_moreinfo, moreInfoContainer, false);
 			TextView txtTitle = (TextView) moreInfoView.findViewById(android.R.id.title);
 			TextView txtValue = (TextView) moreInfoView.findViewById(android.R.id.message);

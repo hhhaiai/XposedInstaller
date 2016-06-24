@@ -7,8 +7,7 @@ public class RepoDbDefinitions {
 	public static final int DATABASE_VERSION = 4;
 	public static final String DATABASE_NAME = "repo_cache.db";
 
-
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	public static interface RepositoriesColumns extends BaseColumns {
 		public static final String TABLE_NAME = "repositories";
 
@@ -17,17 +16,10 @@ public class RepoDbDefinitions {
 		public static final String PARTIAL_URL = "partial_url";
 		public static final String VERSION = "version";
 	}
-	static final String SQL_CREATE_TABLE_REPOSITORIES =
-		"CREATE TABLE " + RepositoriesColumns.TABLE_NAME + " (" +
-		RepositoriesColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-		RepositoriesColumns.URL + " TEXT NOT NULL, " +
-		RepositoriesColumns.TITLE + " TEXT, " +
-		RepositoriesColumns.PARTIAL_URL + " TEXT, " +
-		RepositoriesColumns.VERSION + " TEXT, " +
-		"UNIQUE (" + RepositoriesColumns.URL + ") ON CONFLICT REPLACE)";
 
+	static final String SQL_CREATE_TABLE_REPOSITORIES = "CREATE TABLE " + RepositoriesColumns.TABLE_NAME + " (" + RepositoriesColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + RepositoriesColumns.URL + " TEXT NOT NULL, " + RepositoriesColumns.TITLE + " TEXT, " + RepositoriesColumns.PARTIAL_URL + " TEXT, " + RepositoriesColumns.VERSION + " TEXT, " + "UNIQUE (" + RepositoriesColumns.URL + ") ON CONFLICT REPLACE)";
 
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	public static interface ModulesColumns extends BaseColumns {
 		public static final String TABLE_NAME = "modules";
 
@@ -45,27 +37,12 @@ public class RepoDbDefinitions {
 		public static final String PREFERRED = "preferred";
 		public static final String LATEST_VERSION = "latest_version_id";
 	}
-	static final String SQL_CREATE_TABLE_MODULES =
-		"CREATE TABLE " + ModulesColumns.TABLE_NAME + " (" +
-		ModulesColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
-		ModulesColumns.REPO_ID + " INTEGER NOT NULL REFERENCES "
-			+ RepositoriesColumns.TABLE_NAME + " ON DELETE CASCADE, " +
-		ModulesColumns.PKGNAME + " TEXT NOT NULL, " +
-		ModulesColumns.TITLE + " TEXT NOT NULL, " +
-		ModulesColumns.SUMMARY + " TEXT, " +
-		ModulesColumns.DESCRIPTION + " TEXT, " +
-		ModulesColumns.DESCRIPTION_IS_HTML + " INTEGER DEFAULT 0, " +
-		ModulesColumns.AUTHOR + " TEXT, " +
-		ModulesColumns.SUPPORT + " TEXT, " +
-		ModulesColumns.CREATED + " INTEGER DEFAULT -1, " +
-		ModulesColumns.UPDATED + " INTEGER DEFAULT -1, " +
-		ModulesColumns.PREFERRED + " INTEGER DEFAULT 1, " +
-		ModulesColumns.LATEST_VERSION + " INTEGER REFERENCES " + ModuleVersionsColumns.TABLE_NAME + ", " +
-		"UNIQUE (" + ModulesColumns.PKGNAME + ", " + ModulesColumns.REPO_ID + ") ON CONFLICT REPLACE)";
+	static final String SQL_CREATE_TABLE_MODULES = "CREATE TABLE " + ModulesColumns.TABLE_NAME + " (" + ModulesColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
+	        ModulesColumns.REPO_ID + " INTEGER NOT NULL REFERENCES " + RepositoriesColumns.TABLE_NAME + " ON DELETE CASCADE, " + ModulesColumns.PKGNAME + " TEXT NOT NULL, " + ModulesColumns.TITLE + " TEXT NOT NULL, " + ModulesColumns.SUMMARY + " TEXT, " + ModulesColumns.DESCRIPTION + " TEXT, " + ModulesColumns.DESCRIPTION_IS_HTML + " INTEGER DEFAULT 0, " + ModulesColumns.AUTHOR + " TEXT, " + ModulesColumns.SUPPORT + " TEXT, " + ModulesColumns.CREATED + " INTEGER DEFAULT -1, " + ModulesColumns.UPDATED + " INTEGER DEFAULT -1, " + ModulesColumns.PREFERRED + " INTEGER DEFAULT 1, " + ModulesColumns.LATEST_VERSION + " INTEGER REFERENCES " + ModuleVersionsColumns.TABLE_NAME + ", " + "UNIQUE (" + ModulesColumns.PKGNAME + ", " + ModulesColumns.REPO_ID + ") ON CONFLICT REPLACE)";
 
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	public static interface ModuleVersionsColumns extends BaseColumns {
 		public static final String TABLE_NAME = "module_versions";
 		public static final String IDX_MODULE_ID = "module_versions_module_id_idx";
@@ -80,43 +57,22 @@ public class RepoDbDefinitions {
 		public static final String RELTYPE = "reltype";
 		public static final String UPLOADED = "uploaded";
 	}
-	static final String SQL_CREATE_TABLE_MODULE_VERSIONS =
-		"CREATE TABLE " + ModuleVersionsColumns.TABLE_NAME + " (" +
-		ModuleVersionsColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-		ModuleVersionsColumns.MODULE_ID + " INTEGER NOT NULL REFERENCES "
-			+ ModulesColumns.TABLE_NAME + " ON DELETE CASCADE, " +
-		ModuleVersionsColumns.NAME + " TEXT NOT NULL, " +
-		ModuleVersionsColumns.CODE + " INTEGER NOT NULL, " +
-		ModuleVersionsColumns.DOWNLOAD_LINK + " TEXT, " +
-		ModuleVersionsColumns.MD5SUM + " TEXT, " +
-		ModuleVersionsColumns.CHANGELOG + " TEXT, " +
-		ModuleVersionsColumns.CHANGELOG_IS_HTML + " INTEGER DEFAULT 0, " +
-		ModuleVersionsColumns.RELTYPE + " INTEGER DEFAULT 0, " +
-		ModuleVersionsColumns.UPLOADED + " INTEGER DEFAULT -1)";
-	static final String SQL_CREATE_INDEX_MODULE_VERSIONS_MODULE_ID =
-			"CREATE INDEX " + ModuleVersionsColumns.IDX_MODULE_ID + " ON " +
-			ModuleVersionsColumns.TABLE_NAME + " (" +
-			ModuleVersionsColumns.MODULE_ID + ")";
 
+	static final String SQL_CREATE_TABLE_MODULE_VERSIONS = "CREATE TABLE " + ModuleVersionsColumns.TABLE_NAME + " (" + ModuleVersionsColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + ModuleVersionsColumns.MODULE_ID + " INTEGER NOT NULL REFERENCES " + ModulesColumns.TABLE_NAME + " ON DELETE CASCADE, " + ModuleVersionsColumns.NAME + " TEXT NOT NULL, " + ModuleVersionsColumns.CODE + " INTEGER NOT NULL, " + ModuleVersionsColumns.DOWNLOAD_LINK + " TEXT, " + ModuleVersionsColumns.MD5SUM + " TEXT, " + ModuleVersionsColumns.CHANGELOG + " TEXT, " + ModuleVersionsColumns.CHANGELOG_IS_HTML + " INTEGER DEFAULT 0, " + ModuleVersionsColumns.RELTYPE + " INTEGER DEFAULT 0, " + ModuleVersionsColumns.UPLOADED + " INTEGER DEFAULT -1)";
+	static final String SQL_CREATE_INDEX_MODULE_VERSIONS_MODULE_ID = "CREATE INDEX " + ModuleVersionsColumns.IDX_MODULE_ID + " ON " + ModuleVersionsColumns.TABLE_NAME + " (" + ModuleVersionsColumns.MODULE_ID + ")";
 
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	public static interface MoreInfoColumns extends BaseColumns {
-	public static final String TABLE_NAME = "more_info";
+		public static final String TABLE_NAME = "more_info";
 
-	public static final String MODULE_ID = "module_id";
-	public static final String LABEL = "label";
-	public static final String VALUE = "value";
+		public static final String MODULE_ID = "module_id";
+		public static final String LABEL = "label";
+		public static final String VALUE = "value";
 	}
-	static final String SQL_CREATE_TABLE_MORE_INFO =
-		"CREATE TABLE " + MoreInfoColumns.TABLE_NAME + " (" +
-		MoreInfoColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-		MoreInfoColumns.MODULE_ID + " INTEGER NOT NULL REFERENCES "
-			+ ModulesColumns.TABLE_NAME + " ON DELETE CASCADE, " +
-		MoreInfoColumns.LABEL + " TEXT NOT NULL, " +
-		MoreInfoColumns.VALUE + " TEXT)";
 
+	static final String SQL_CREATE_TABLE_MORE_INFO = "CREATE TABLE " + MoreInfoColumns.TABLE_NAME + " (" + MoreInfoColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MoreInfoColumns.MODULE_ID + " INTEGER NOT NULL REFERENCES " + ModulesColumns.TABLE_NAME + " ON DELETE CASCADE, " + MoreInfoColumns.LABEL + " TEXT NOT NULL, " + MoreInfoColumns.VALUE + " TEXT)";
 
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	public static interface InstalledModulesColumns {
 		public static final String TABLE_NAME = "installed_modules";
 
@@ -124,14 +80,10 @@ public class RepoDbDefinitions {
 		public static final String VERSION_CODE = "version_code";
 		public static final String VERSION_NAME = "version_name";
 	}
-	static final String SQL_CREATE_TEMP_TABLE_INSTALLED_MODULES =
-		"CREATE TEMP TABLE " + InstalledModulesColumns.TABLE_NAME + " (" +
-		InstalledModulesColumns.PKGNAME + " TEXT PRIMARY KEY ON CONFLICT REPLACE, " +
-		InstalledModulesColumns.VERSION_CODE + " INTEGER NOT NULL, " +
-		InstalledModulesColumns.VERSION_NAME + " TEXT)";
 
+	static final String SQL_CREATE_TEMP_TABLE_INSTALLED_MODULES = "CREATE TEMP TABLE " + InstalledModulesColumns.TABLE_NAME + " (" + InstalledModulesColumns.PKGNAME + " TEXT PRIMARY KEY ON CONFLICT REPLACE, " + InstalledModulesColumns.VERSION_CODE + " INTEGER NOT NULL, " + InstalledModulesColumns.VERSION_NAME + " TEXT)";
 
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	public static interface InstalledModulesUpdatesColumns {
 		public static final String VIEW_NAME = InstalledModulesColumns.TABLE_NAME + "_updates";
 
@@ -143,26 +95,10 @@ public class RepoDbDefinitions {
 		public static final String LATEST_CODE = "latest_code";
 		public static final String LATEST_NAME = "latest_name";
 	}
-	static final String SQL_CREATE_TEMP_VIEW_INSTALLED_MODULES_UPDATES =
-		"CREATE TEMP VIEW " + InstalledModulesUpdatesColumns.VIEW_NAME + " AS SELECT " +
-		"m." + ModulesColumns._ID + " AS " + InstalledModulesUpdatesColumns.MODULE_ID + ", " +
-		"i." + InstalledModulesColumns.PKGNAME + " AS " + InstalledModulesUpdatesColumns.PKGNAME + ", " +
-		"i." + InstalledModulesColumns.VERSION_CODE + " AS " + InstalledModulesUpdatesColumns.INSTALLED_CODE + ", " +
-		"i." + InstalledModulesColumns.VERSION_NAME + " AS " + InstalledModulesUpdatesColumns.INSTALLED_NAME + ", " +
-		"v." + ModuleVersionsColumns._ID + " AS " + InstalledModulesUpdatesColumns.LATEST_ID + ", " +
-		"v." + ModuleVersionsColumns.CODE + " AS " + InstalledModulesUpdatesColumns.LATEST_CODE + ", " +
-		"v." + ModuleVersionsColumns.NAME + " AS " + InstalledModulesUpdatesColumns.LATEST_NAME +
-		" FROM " + InstalledModulesColumns.TABLE_NAME + " AS i" +
-		" INNER JOIN " + ModulesColumns.TABLE_NAME + " AS m" +
-			" ON m." + ModulesColumns.PKGNAME + " = i." + InstalledModulesColumns.PKGNAME +
-		" INNER JOIN " + ModuleVersionsColumns.TABLE_NAME + " AS v" +
-			" ON v." + ModuleVersionsColumns._ID + " = m." + ModulesColumns.LATEST_VERSION + 
-		" WHERE " + InstalledModulesUpdatesColumns.LATEST_CODE
-			+ " > " + InstalledModulesUpdatesColumns.INSTALLED_CODE
-			+ " AND " + ModulesColumns.PREFERRED + " = 1";
 
+	static final String SQL_CREATE_TEMP_VIEW_INSTALLED_MODULES_UPDATES = "CREATE TEMP VIEW " + InstalledModulesUpdatesColumns.VIEW_NAME + " AS SELECT " + "m." + ModulesColumns._ID + " AS " + InstalledModulesUpdatesColumns.MODULE_ID + ", " + "i." + InstalledModulesColumns.PKGNAME + " AS " + InstalledModulesUpdatesColumns.PKGNAME + ", " + "i." + InstalledModulesColumns.VERSION_CODE + " AS " + InstalledModulesUpdatesColumns.INSTALLED_CODE + ", " + "i." + InstalledModulesColumns.VERSION_NAME + " AS " + InstalledModulesUpdatesColumns.INSTALLED_NAME + ", " + "v." + ModuleVersionsColumns._ID + " AS " + InstalledModulesUpdatesColumns.LATEST_ID + ", " + "v." + ModuleVersionsColumns.CODE + " AS " + InstalledModulesUpdatesColumns.LATEST_CODE + ", " + "v." + ModuleVersionsColumns.NAME + " AS " + InstalledModulesUpdatesColumns.LATEST_NAME + " FROM " + InstalledModulesColumns.TABLE_NAME + " AS i" + " INNER JOIN " + ModulesColumns.TABLE_NAME + " AS m" + " ON m." + ModulesColumns.PKGNAME + " = i." + InstalledModulesColumns.PKGNAME + " INNER JOIN " + ModuleVersionsColumns.TABLE_NAME + " AS v" + " ON v." + ModuleVersionsColumns._ID + " = m." + ModulesColumns.LATEST_VERSION + " WHERE " + InstalledModulesUpdatesColumns.LATEST_CODE + " > " + InstalledModulesUpdatesColumns.INSTALLED_CODE + " AND " + ModulesColumns.PREFERRED + " = 1";
 
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	public interface OverviewColumns extends BaseColumns {
 		public static final String PKGNAME = ModulesColumns.PKGNAME;
 		public static final String TITLE = ModulesColumns.TITLE;
@@ -179,7 +115,8 @@ public class RepoDbDefinitions {
 	}
 
 	public static class OverviewColumnsIndexes {
-		private OverviewColumnsIndexes() {}
+		private OverviewColumnsIndexes() {
+		}
 
 		public static int PKGNAME = -1;
 		public static int TITLE = -1;

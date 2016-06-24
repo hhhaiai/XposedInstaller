@@ -22,8 +22,11 @@ public class RepoParser {
 
 	public interface RepoParserCallback {
 		public void onRepositoryMetadata(Repository repository);
+
 		public void onNewModule(Module module);
+
 		public void onRemoveModule(String packageName);
+
 		public void onCompleted(Repository repository);
 	}
 

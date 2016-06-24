@@ -92,7 +92,6 @@ public class PrefixedSharedPreferences implements SharedPreferences {
 		throw new UnsupportedOperationException("listeners are not supported in this implementation");
 	}
 
-
 	private class EditorImpl implements Editor {
 		private final Editor mEditorBase;
 

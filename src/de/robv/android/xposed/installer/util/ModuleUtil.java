@@ -24,7 +24,6 @@ import de.robv.android.xposed.installer.XposedApp;
 import de.robv.android.xposed.installer.repo.ModuleVersion;
 import de.robv.android.xposed.installer.repo.RepoDb;
 
-
 public final class ModuleUtil {
 	private static ModuleUtil mInstance = null;
 	private final XposedApp mApp;
@@ -36,7 +35,8 @@ public final class ModuleUtil {
 	private boolean mIsReloading = false;
 	private final List<ModuleListener> mListeners = new CopyOnWriteArrayList<ModuleListener>();
 
-	public static int MIN_MODULE_VERSION = 2; // reject modules with xposedminversion below this
+	public static int MIN_MODULE_VERSION = 2; // reject modules with
+	                                          // xposedminversion below this
 	private static final String MODULES_LIST_FILE = XposedApp.BASE_DIR + "conf/modules.list";
 
 	private ModuleUtil() {
@@ -213,7 +213,7 @@ public final class ModuleUtil {
 				Toast.makeText(mApp, R.string.xposed_module_list_updated, Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
 			Log.e(XposedApp.TAG, "cannot write " + MODULES_LIST_FILE, e);
-			Toast.makeText(mApp, "cannot write " +  MODULES_LIST_FILE, Toast.LENGTH_SHORT).show();
+			Toast.makeText(mApp, "cannot write " + MODULES_LIST_FILE, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -228,8 +228,6 @@ public final class ModuleUtil {
 		}
 		return result;
 	}
-
-
 
 	public class InstalledModule {
 		public ApplicationInfo app;
@@ -283,7 +281,8 @@ public final class ModuleUtil {
 						int resId = (Integer) descriptionRaw;
 						if (resId != 0)
 							descriptionTmp = mPm.getResourcesForApplication(app).getString(resId).trim();
-					} catch (Exception ignored) {}
+					} catch (Exception ignored) {
+					}
 				}
 				this.description = (descriptionTmp != null) ? descriptionTmp : "";
 			}
@@ -309,8 +308,6 @@ public final class ModuleUtil {
 		}
 	}
 
-
-
 	public void addListener(ModuleListener listener) {
 		if (!mListeners.contains(listener))
 			mListeners.add(listener);
@@ -322,7 +319,8 @@ public final class ModuleUtil {
 
 	public interface ModuleListener {
 		/**
-		 * Called whenever one (previously or now) installed module has been reloaded
+		 * Called whenever one (previously or now) installed module has been
+		 * reloaded
 		 */
 		public void onSingleInstalledModuleReloaded(ModuleUtil moduleUtil, String packageName, InstalledModule module);
 

@@ -44,8 +44,7 @@ public final class RepoDb extends SQLiteOpenHelper {
 	}
 
 	private RepoDb(Context context) {
-		super(context, new File(context.getCacheDir(), RepoDbDefinitions.DATABASE_NAME).getPath(),
-				null, RepoDbDefinitions.DATABASE_VERSION);
+		super(context, new File(context.getCacheDir(), RepoDbDefinitions.DATABASE_NAME).getPath(), null, RepoDbDefinitions.DATABASE_VERSION);
 	}
 
 	@Override
@@ -73,7 +72,7 @@ public final class RepoDb extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + MoreInfoColumns.TABLE_NAME);
 
 		db.execSQL("DROP TABLE IF EXISTS " + InstalledModulesColumns.TABLE_NAME);
-		db.execSQL("DROP VIEW IF EXISTS "  + InstalledModulesUpdatesColumns.VIEW_NAME);
+		db.execSQL("DROP VIEW IF EXISTS " + InstalledModulesUpdatesColumns.VIEW_NAME);
 
 		onCreate(db);
 	}
@@ -106,8 +105,7 @@ public final class RepoDb extends SQLiteOpenHelper {
 			return result;
 		} else {
 			c.close();
-			throw new RowNotFoundException("Could not find " + table + "." + searchColumn
-					+ " with value '" + searchValue + "'");
+			throw new RowNotFoundException("Could not find " + table + "." + searchColumn + " with value '" + searchValue + "'");
 		}
 	}
 
@@ -122,16 +120,10 @@ public final class RepoDb extends SQLiteOpenHelper {
 			mDb.delete(RepositoriesColumns.TABLE_NAME, null, null);
 	}
 
-	public static Map<Long,Repository> getRepositories() {
-		Map<Long,Repository> result = new LinkedHashMap<Long, Repository>(1);
+	public static Map<Long, Repository> getRepositories() {
+		Map<Long, Repository> result = new LinkedHashMap<Long, Repository>(1);
 
-		String[] projection = new String[] {
-			RepositoriesColumns._ID,
-			RepositoriesColumns.URL,
-			RepositoriesColumns.TITLE,
-			RepositoriesColumns.PARTIAL_URL,
-			RepositoriesColumns.VERSION,
-		};
+		String[] projection = new String[] { RepositoriesColumns._ID, RepositoriesColumns.URL, RepositoriesColumns.TITLE, RepositoriesColumns.PARTIAL_URL, RepositoriesColumns.VERSION, };
 
 		Cursor c = mDb.query(RepositoriesColumns.TABLE_NAME, projection, null, null, null, null, RepositoriesColumns._ID);
 		while (c.moveToNext()) {
@@ -154,17 +146,13 @@ public final class RepoDb extends SQLiteOpenHelper {
 		values.put(RepositoriesColumns.TITLE, repository.name);
 		values.put(RepositoriesColumns.PARTIAL_URL, repository.partialUrl);
 		values.put(RepositoriesColumns.VERSION, repository.version);
-		mDb.update(RepositoriesColumns.TABLE_NAME, values,
-				RepositoriesColumns._ID + " = ?",
-				new String[] { Long.toString(repoId) });
+		mDb.update(RepositoriesColumns.TABLE_NAME, values, RepositoriesColumns._ID + " = ?", new String[] { Long.toString(repoId) });
 	}
 
 	public static void updateRepositoryVersion(long repoId, String version) {
 		ContentValues values = new ContentValues();
 		values.put(RepositoriesColumns.VERSION, version);
-		mDb.update(RepositoriesColumns.TABLE_NAME, values,
-				RepositoriesColumns._ID + " = ?",
-				new String[] { Long.toString(repoId) });
+		mDb.update(RepositoriesColumns.TABLE_NAME, values, RepositoriesColumns._ID + " = ?", new String[] { Long.toString(repoId) });
 	}
 
 	public static long insertModule(long repoId, Module mod) {
@@ -196,12 +184,10 @@ public final class RepoDb extends SQLiteOpenHelper {
 			if (latestVersionId > -1) {
 				values = new ContentValues();
 				values.put(ModulesColumns.LATEST_VERSION, latestVersionId);
-				mDb.update(ModulesColumns.TABLE_NAME, values,
-						ModulesColumns._ID + " = ?",
-						new String[] { Long.toString(moduleId) });
+				mDb.update(ModulesColumns.TABLE_NAME, values, ModulesColumns._ID + " = ?", new String[] { Long.toString(moduleId) });
 			}
 
-			for (Pair<String,String> moreInfoEntry : mod.moreInfo) {
+			for (Pair<String, String> moreInfoEntry : mod.moreInfo) {
 				insertMoreInfo(moduleId, moreInfoEntry.first, moreInfoEntry.second);
 			}
 
@@ -238,32 +224,16 @@ public final class RepoDb extends SQLiteOpenHelper {
 	}
 
 	public static void deleteAllModules(long repoId) {
-		mDb.delete(ModulesColumns.TABLE_NAME,
-				ModulesColumns.REPO_ID + " = ?",
-				new String[] { Long.toString(repoId) });
+		mDb.delete(ModulesColumns.TABLE_NAME, ModulesColumns.REPO_ID + " = ?", new String[] { Long.toString(repoId) });
 	}
 
 	public static void deleteModule(long repoId, String packageName) {
-		mDb.delete(ModulesColumns.TABLE_NAME,
-				ModulesColumns.REPO_ID + " = ? AND " + ModulesColumns.PKGNAME + " = ?",
-				new String[] { Long.toString(repoId), packageName });
+		mDb.delete(ModulesColumns.TABLE_NAME, ModulesColumns.REPO_ID + " = ? AND " + ModulesColumns.PKGNAME + " = ?", new String[] { Long.toString(repoId), packageName });
 	}
 
 	public static Module getModuleByPackageName(String packageName) {
 		// The module itself
-		String[] projection = new String[] {
-			ModulesColumns._ID,
-			ModulesColumns.REPO_ID,
-			ModulesColumns.PKGNAME,
-			ModulesColumns.TITLE,
-			ModulesColumns.SUMMARY,
-			ModulesColumns.DESCRIPTION,
-			ModulesColumns.DESCRIPTION_IS_HTML,
-			ModulesColumns.AUTHOR,
-			ModulesColumns.SUPPORT,
-			ModulesColumns.CREATED,
-			ModulesColumns.UPDATED,
-		};
+		String[] projection = new String[] { ModulesColumns._ID, ModulesColumns.REPO_ID, ModulesColumns.PKGNAME, ModulesColumns.TITLE, ModulesColumns.SUMMARY, ModulesColumns.DESCRIPTION, ModulesColumns.DESCRIPTION_IS_HTML, ModulesColumns.AUTHOR, ModulesColumns.SUPPORT, ModulesColumns.CREATED, ModulesColumns.UPDATED, };
 
 		String where = ModulesColumns.PREFERRED + " = 1 AND " + ModulesColumns.PKGNAME + " = ?";
 		String[] whereArgs = new String[] { packageName };
@@ -290,18 +260,8 @@ public final class RepoDb extends SQLiteOpenHelper {
 
 		c.close();
 
-
 		// Versions
-		projection = new String[] {
-			ModuleVersionsColumns.NAME,
-			ModuleVersionsColumns.CODE,
-			ModuleVersionsColumns.DOWNLOAD_LINK,
-			ModuleVersionsColumns.MD5SUM,
-			ModuleVersionsColumns.CHANGELOG,
-			ModuleVersionsColumns.CHANGELOG_IS_HTML,
-			ModuleVersionsColumns.RELTYPE,
-			ModuleVersionsColumns.UPLOADED,
-		};
+		projection = new String[] { ModuleVersionsColumns.NAME, ModuleVersionsColumns.CODE, ModuleVersionsColumns.DOWNLOAD_LINK, ModuleVersionsColumns.MD5SUM, ModuleVersionsColumns.CHANGELOG, ModuleVersionsColumns.CHANGELOG_IS_HTML, ModuleVersionsColumns.RELTYPE, ModuleVersionsColumns.UPLOADED, };
 
 		where = ModuleVersionsColumns.MODULE_ID + " = ?";
 		whereArgs = new String[] { Long.toString(moduleId) };
@@ -321,12 +281,8 @@ public final class RepoDb extends SQLiteOpenHelper {
 		}
 		c.close();
 
-
 		// MoreInfo
-		projection = new String[] {
-			MoreInfoColumns.LABEL,
-			MoreInfoColumns.VALUE,
-		};
+		projection = new String[] { MoreInfoColumns.LABEL, MoreInfoColumns.VALUE, };
 
 		where = MoreInfoColumns.MODULE_ID + " = ?";
 		whereArgs = new String[] { Long.toString(moduleId) };
@@ -348,14 +304,7 @@ public final class RepoDb extends SQLiteOpenHelper {
 
 	public static void updateModuleLatestVersion(String packageName) {
 		int maxShownReleaseType = mRepoLoader.getMaxShownReleaseType(packageName).ordinal();
-		mDb.execSQL("UPDATE " + ModulesColumns.TABLE_NAME
-			+ " SET " + ModulesColumns.LATEST_VERSION
-				+ " = (SELECT " + ModuleVersionsColumns._ID + " FROM " + ModuleVersionsColumns.TABLE_NAME + " AS v"
-				+ " WHERE v." + ModuleVersionsColumns.MODULE_ID
-				+ " = " + ModulesColumns.TABLE_NAME + "." + ModulesColumns._ID
-				+ " AND reltype <= ? LIMIT 1)"
-			+ " WHERE " + ModulesColumns.PKGNAME + " = ?",
-			new Object[] { maxShownReleaseType, packageName });
+		mDb.execSQL("UPDATE " + ModulesColumns.TABLE_NAME + " SET " + ModulesColumns.LATEST_VERSION + " = (SELECT " + ModuleVersionsColumns._ID + " FROM " + ModuleVersionsColumns.TABLE_NAME + " AS v" + " WHERE v." + ModuleVersionsColumns.MODULE_ID + " = " + ModulesColumns.TABLE_NAME + "." + ModulesColumns._ID + " AND reltype <= ? LIMIT 1)" + " WHERE " + ModulesColumns.PKGNAME + " = ?", new Object[] { maxShownReleaseType, packageName });
 	}
 
 	public static void updateAllModulesLatestVersion() {
@@ -382,9 +331,7 @@ public final class RepoDb extends SQLiteOpenHelper {
 	}
 
 	public static void deleteInstalledModule(String packageName) {
-		mDb.delete(InstalledModulesColumns.TABLE_NAME,
-				InstalledModulesColumns.PKGNAME + " = ?",
-				new String[] { packageName });
+		mDb.delete(InstalledModulesColumns.TABLE_NAME, InstalledModulesColumns.PKGNAME + " = ?", new String[] { packageName });
 	}
 
 	public static void deleteAllInstalledModules() {
@@ -393,35 +340,21 @@ public final class RepoDb extends SQLiteOpenHelper {
 
 	public static Cursor queryModuleOverview(int sortingOrder, CharSequence filterText) {
 		// Columns
-		String[] projection = new String[] {
-			"m." + ModulesColumns._ID,
-			"m." + ModulesColumns.PKGNAME,
-			"m." + ModulesColumns.TITLE,
-			"m." + ModulesColumns.SUMMARY,
-			"m." + ModulesColumns.CREATED,
-			"m." + ModulesColumns.UPDATED,
+		String[] projection = new String[] { "m." + ModulesColumns._ID, "m." + ModulesColumns.PKGNAME, "m." + ModulesColumns.TITLE, "m." + ModulesColumns.SUMMARY, "m." + ModulesColumns.CREATED, "m." + ModulesColumns.UPDATED,
 
-			"v." + ModuleVersionsColumns.NAME + " AS " + OverviewColumns.LATEST_VERSION,
-			"i." + InstalledModulesColumns.VERSION_NAME + " AS " + OverviewColumns.INSTALLED_VERSION,
+		        "v." + ModuleVersionsColumns.NAME + " AS " + OverviewColumns.LATEST_VERSION, "i." + InstalledModulesColumns.VERSION_NAME + " AS " + OverviewColumns.INSTALLED_VERSION,
 
-			"(CASE WHEN m." + ModulesColumns.PKGNAME + " = '" + ModuleUtil.getInstance().getFrameworkPackageName()
-				+ "' THEN 1 ELSE 0 END) AS " + OverviewColumns.IS_FRAMEWORK,
+		        "(CASE WHEN m." + ModulesColumns.PKGNAME + " = '" + ModuleUtil.getInstance().getFrameworkPackageName() + "' THEN 1 ELSE 0 END) AS " + OverviewColumns.IS_FRAMEWORK,
 
-			"(CASE WHEN i." + InstalledModulesColumns.VERSION_NAME + " IS NOT NULL"
-				+ " THEN 1 ELSE 0 END) AS " + OverviewColumns.IS_INSTALLED,
+		        "(CASE WHEN i." + InstalledModulesColumns.VERSION_NAME + " IS NOT NULL" + " THEN 1 ELSE 0 END) AS " + OverviewColumns.IS_INSTALLED,
 
-			"(CASE WHEN v." + ModuleVersionsColumns.CODE + " > " + InstalledModulesColumns.VERSION_CODE
-				+ " THEN 1 ELSE 0 END) AS " + OverviewColumns.HAS_UPDATE,
-		};
+		        "(CASE WHEN v." + ModuleVersionsColumns.CODE + " > " + InstalledModulesColumns.VERSION_CODE + " THEN 1 ELSE 0 END) AS " + OverviewColumns.HAS_UPDATE, };
 
 		// Conditions
 		String where = ModulesColumns.PREFERRED + " = 1";
 		String whereArgs[] = null;
 		if (!TextUtils.isEmpty(filterText)) {
-			where += " AND (m." + ModulesColumns.TITLE + " LIKE ?"
-				+ " OR m." + ModulesColumns.SUMMARY + " LIKE ?"
-				+ " OR m." + ModulesColumns.DESCRIPTION + " LIKE ?"
-				+ " OR m." + ModulesColumns.AUTHOR + " LIKE ?)";
+			where += " AND (m." + ModulesColumns.TITLE + " LIKE ?" + " OR m." + ModulesColumns.SUMMARY + " LIKE ?" + " OR m." + ModulesColumns.DESCRIPTION + " LIKE ?" + " OR m." + ModulesColumns.AUTHOR + " LIKE ?)";
 
 			String filterTextArg = "%" + filterText + "%";
 			whereArgs = new String[] { filterTextArg, filterTextArg, filterTextArg, filterTextArg };
@@ -449,13 +382,7 @@ public final class RepoDb extends SQLiteOpenHelper {
 		sbOrder.append(OverviewColumns.PKGNAME);
 
 		// Query
-		Cursor c = mDb.query(
-			ModulesColumns.TABLE_NAME + " AS m" +
-				" LEFT JOIN " + ModuleVersionsColumns.TABLE_NAME + " AS v" +
-					" ON v." + ModuleVersionsColumns._ID + " = m." + ModulesColumns.LATEST_VERSION +
-				" LEFT JOIN " + InstalledModulesColumns.TABLE_NAME + " AS i" +
-					" ON i." + InstalledModulesColumns.PKGNAME + " = m." + ModulesColumns.PKGNAME,
-			projection, where, whereArgs, null, null, sbOrder.toString());
+		Cursor c = mDb.query(ModulesColumns.TABLE_NAME + " AS m" + " LEFT JOIN " + ModuleVersionsColumns.TABLE_NAME + " AS v" + " ON v." + ModuleVersionsColumns._ID + " = m." + ModulesColumns.LATEST_VERSION + " LEFT JOIN " + InstalledModulesColumns.TABLE_NAME + " AS i" + " ON i." + InstalledModulesColumns.PKGNAME + " = m." + ModulesColumns.PKGNAME, projection, where, whereArgs, null, null, sbOrder.toString());
 
 		// Cache column indexes
 		OverviewColumnsIndexes.fillFromCursor(c);
@@ -483,9 +410,9 @@ public final class RepoDb extends SQLiteOpenHelper {
 		return latestVersion;
 	}
 
-
 	public static class RowNotFoundException extends RuntimeException {
 		private static final long serialVersionUID = -396324186622439535L;
+
 		public RowNotFoundException(String reason) {
 			super(reason);
 		}

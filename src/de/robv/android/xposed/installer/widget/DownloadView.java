@@ -103,43 +103,42 @@ public class DownloadView extends LinearLayout {
 				txtInfo.setVisibility(View.GONE);
 			} else {
 				switch (mInfo.status) {
-					case DownloadManager.STATUS_PENDING:
-					case DownloadManager.STATUS_PAUSED:
-					case DownloadManager.STATUS_RUNNING:
-						btnDownload.setVisibility(View.GONE);
-						btnDownloadCancel.setVisibility(View.VISIBLE);
-						btnInstall.setVisibility(View.GONE);
-						progressBar.setVisibility(View.VISIBLE);
-						txtInfo.setVisibility(View.VISIBLE);
-						if (mInfo.totalSize <= 0 || mInfo.status != DownloadManager.STATUS_RUNNING) {
-							progressBar.setIndeterminate(true);
-							txtInfo.setText(R.string.download_view_waiting);
-						} else {
-							progressBar.setIndeterminate(false);
-							progressBar.setMax(mInfo.totalSize);
-							progressBar.setProgress(mInfo.bytesDownloaded);
-							txtInfo.setText(getContext().getString(R.string.download_view_running,
-									mInfo.bytesDownloaded / 1024, mInfo.totalSize / 1024));
-						}
-						break;
+				case DownloadManager.STATUS_PENDING:
+				case DownloadManager.STATUS_PAUSED:
+				case DownloadManager.STATUS_RUNNING:
+					btnDownload.setVisibility(View.GONE);
+					btnDownloadCancel.setVisibility(View.VISIBLE);
+					btnInstall.setVisibility(View.GONE);
+					progressBar.setVisibility(View.VISIBLE);
+					txtInfo.setVisibility(View.VISIBLE);
+					if (mInfo.totalSize <= 0 || mInfo.status != DownloadManager.STATUS_RUNNING) {
+						progressBar.setIndeterminate(true);
+						txtInfo.setText(R.string.download_view_waiting);
+					} else {
+						progressBar.setIndeterminate(false);
+						progressBar.setMax(mInfo.totalSize);
+						progressBar.setProgress(mInfo.bytesDownloaded);
+						txtInfo.setText(getContext().getString(R.string.download_view_running, mInfo.bytesDownloaded / 1024, mInfo.totalSize / 1024));
+					}
+					break;
 
-					case DownloadManager.STATUS_FAILED:
-						btnDownload.setVisibility(View.VISIBLE);
-						btnDownloadCancel.setVisibility(View.GONE);
-						btnInstall.setVisibility(View.GONE);
-						progressBar.setVisibility(View.GONE);
-						txtInfo.setVisibility(View.VISIBLE);
-						txtInfo.setText(getContext().getString(R.string.download_view_failed, mInfo.reason));
-						break;
+				case DownloadManager.STATUS_FAILED:
+					btnDownload.setVisibility(View.VISIBLE);
+					btnDownloadCancel.setVisibility(View.GONE);
+					btnInstall.setVisibility(View.GONE);
+					progressBar.setVisibility(View.GONE);
+					txtInfo.setVisibility(View.VISIBLE);
+					txtInfo.setText(getContext().getString(R.string.download_view_failed, mInfo.reason));
+					break;
 
-					case DownloadManager.STATUS_SUCCESSFUL:
-						btnDownload.setVisibility(View.GONE);
-						btnDownloadCancel.setVisibility(View.GONE);
-						btnInstall.setVisibility(View.VISIBLE);
-						progressBar.setVisibility(View.GONE);
-						txtInfo.setVisibility(View.VISIBLE);
-						txtInfo.setText(R.string.download_view_successful);
-						break;
+				case DownloadManager.STATUS_SUCCESSFUL:
+					btnDownload.setVisibility(View.GONE);
+					btnDownloadCancel.setVisibility(View.GONE);
+					btnInstall.setVisibility(View.VISIBLE);
+					progressBar.setVisibility(View.GONE);
+					txtInfo.setVisibility(View.VISIBLE);
+					txtInfo.setText(R.string.download_view_successful);
+					break;
 				}
 			}
 		}
@@ -195,9 +194,7 @@ public class DownloadView extends LinearLayout {
 				if (mInfo == null)
 					return;
 
-				if (mInfo.status != DownloadManager.STATUS_PENDING
-				 && mInfo.status != DownloadManager.STATUS_PAUSED
-				 && mInfo.status != DownloadManager.STATUS_RUNNING)
+				if (mInfo.status != DownloadManager.STATUS_PENDING && mInfo.status != DownloadManager.STATUS_PAUSED && mInfo.status != DownloadManager.STATUS_RUNNING)
 					return;
 			}
 		}

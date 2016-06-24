@@ -50,30 +50,23 @@ public final class NotificationUtil {
 		iModulesTab.putExtra(XposedInstallerActivity.EXTRA_SECTION, XposedInstallerActivity.TAB_MODULES);
 		iModulesTab.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-		PendingIntent pModulesTab = PendingIntent.getActivity(sContext, PENDING_INTENT_OPEN_MODULES,
-				iModulesTab, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pModulesTab = PendingIntent.getActivity(sContext, PENDING_INTENT_OPEN_MODULES, iModulesTab, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		String title = sContext.getString(R.string.module_is_not_activated_yet);
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(sContext)
-			.setContentTitle(title)
-			.setContentText(appName)
-			.setTicker(title)
-			.setContentIntent(pModulesTab)
-			.setAutoCancel(true)
-			.setSmallIcon(R.drawable.ic_notification);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(sContext).setContentTitle(title).setContentText(appName).setTicker(title).setContentIntent(pModulesTab).setAutoCancel(true).setSmallIcon(R.drawable.ic_notification);
 
 		if (Build.VERSION.SDK_INT >= 16) {
 			Intent iActivateAndReboot = new Intent(sContext, RebootReceiver.class);
 			iActivateAndReboot.putExtra(RebootReceiver.EXTRA_ACTIVATE_MODULE, packageName);
-			PendingIntent pActivateAndReboot = PendingIntent.getBroadcast(sContext, PENDING_INTENT_ACTIVATE_MODULE_AND_REBOOT,
-					iActivateAndReboot, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pActivateAndReboot = PendingIntent.getBroadcast(sContext, PENDING_INTENT_ACTIVATE_MODULE_AND_REBOOT, iActivateAndReboot, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			NotificationCompat.BigTextStyle notiStyle = new NotificationCompat.BigTextStyle();
 			notiStyle.setBigContentTitle(title);
 			notiStyle.bigText(sContext.getString(R.string.module_is_not_activated_yet_detailed, appName));
 			builder.setStyle(notiStyle);
 
-			// Only show the quick activation button if any module has been enabled before,
+			// Only show the quick activation button if any module has been
+			// enabled before,
 			// to ensure that the user know the way to disable the module later.
 			if (!ModuleUtil.getInstance().getEnabledModules().isEmpty())
 				builder.addAction(R.drawable.ic_menu_refresh, sContext.getString(R.string.activate_and_reboot), pActivateAndReboot);
@@ -86,28 +79,19 @@ public final class NotificationUtil {
 		Intent iInstallTab = new Intent(sContext, XposedInstallerActivity.class);
 		iInstallTab.putExtra(XposedInstallerActivity.EXTRA_SECTION, XposedInstallerActivity.TAB_INSTALL);
 		iInstallTab.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent pInstallTab = PendingIntent.getActivity(sContext, PENDING_INTENT_OPEN_INSTALL,
-				iInstallTab, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pInstallTab = PendingIntent.getActivity(sContext, PENDING_INTENT_OPEN_INSTALL, iInstallTab, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		String title = sContext.getString(R.string.xposed_module_updated_notification_title);
 		String message = sContext.getString(R.string.xposed_module_updated_notification);
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(sContext)
-			.setContentTitle(title)
-			.setContentText(message)
-			.setTicker(title)
-			.setContentIntent(pInstallTab)
-			.setAutoCancel(true)
-			.setSmallIcon(R.drawable.ic_notification);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(sContext).setContentTitle(title).setContentText(message).setTicker(title).setContentIntent(pInstallTab).setAutoCancel(true).setSmallIcon(R.drawable.ic_notification);
 
 		if (Build.VERSION.SDK_INT >= 16) {
 			Intent iSoftReboot = new Intent(sContext, RebootReceiver.class);
 			iSoftReboot.putExtra(RebootReceiver.EXTRA_SOFT_REBOOT, true);
-			PendingIntent pSoftReboot = PendingIntent.getBroadcast(sContext, PENDING_INTENT_SOFT_REBOOT,
-					iSoftReboot, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pSoftReboot = PendingIntent.getBroadcast(sContext, PENDING_INTENT_SOFT_REBOOT, iSoftReboot, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			Intent iReboot = new Intent(sContext, RebootReceiver.class);
-			PendingIntent pReboot = PendingIntent.getBroadcast(sContext, PENDING_INTENT_REBOOT,
-					iReboot, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pReboot = PendingIntent.getBroadcast(sContext, PENDING_INTENT_REBOOT, iReboot, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			builder.addAction(0, sContext.getString(R.string.reboot), pReboot);
 			builder.addAction(0, sContext.getString(R.string.soft_reboot), pSoftReboot);
@@ -123,11 +107,11 @@ public final class NotificationUtil {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			/*
-			 *  Close the notification bar in order to see the toast
-			 *  that module was enabled successfully.
-			 *  Furthermore, if SU permissions haven't been granted yet,
-			 *  the SU dialog will be prompted behind the expanded notification
-			 *  panel and is therefore not visible to the user.
+			 * Close the notification bar in order to see the toast that module
+			 * was enabled successfully. Furthermore, if SU permissions haven't
+			 * been granted yet, the SU dialog will be prompted behind the
+			 * expanded notification panel and is therefore not visible to the
+			 * user.
 			 */
 			sContext.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
 			cancelAll();
@@ -148,9 +132,7 @@ public final class NotificationUtil {
 
 			List<String> messages = new LinkedList<String>();
 			boolean isSoftReboot = intent.getBooleanExtra(EXTRA_SOFT_REBOOT, false);
-			int returnCode = isSoftReboot ?
-				  rootUtil.execute("setprop ctl.restart surfaceflinger; setprop ctl.restart zygote", messages)
-				: rootUtil.executeWithBusybox("reboot", messages);
+			int returnCode = isSoftReboot ? rootUtil.execute("setprop ctl.restart surfaceflinger; setprop ctl.restart zygote", messages) : rootUtil.executeWithBusybox("reboot", messages);
 
 			if (returnCode != 0) {
 				Log.e(XposedApp.TAG, "Could not reboot:");

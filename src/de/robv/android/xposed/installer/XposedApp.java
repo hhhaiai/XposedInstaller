@@ -144,8 +144,19 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
 		mCurrentActivity = null;
 	}
 
-	@Override public void onActivityStarted(Activity activity) {}
-	@Override public void onActivityStopped(Activity activity) {}
-	@Override public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
-	@Override public void onActivityDestroyed(Activity activity) {}
+	@Override
+	public void onActivityStarted(Activity activity) {
+	}
+
+	@Override
+	public void onActivityStopped(Activity activity) {
+	}
+
+	@Override
+	public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+	}
+
+	@Override
+	public void onActivityDestroyed(Activity activity) {
+	}
 }
